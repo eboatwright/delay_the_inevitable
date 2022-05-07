@@ -48,8 +48,14 @@ impl State for IntroState {
 	fn render(&self, context: &Context) {
 		let text = INTRO_TEXT[self.current_text_index];
 		let dimensions = measure_text(text, Some(context.resources.font), 16, 1.0);
+		draw_text_ex(text, 123.0 - (dimensions.width * 0.5).round(), 134.0 + (f32::sin(get_time() as f32 * 3.0) * 10.0).round(), TextParams {
+			color: Color { r: 0.3, g: 0.3, b: 0.4, a: 0.5 },
+			font_size: 16,
+			font: context.resources.font,
+			..Default::default()
+		});
 		draw_text_ex(text, 123.0 - (dimensions.width * 0.5).round(), 132.0 + (f32::sin(get_time() as f32 * 3.0) * 10.0).round(), TextParams {
-			color: Color { r: 99.0 / 255.0, g: 155.0 / 255.0, b: 1.0, a: 1.0 },
+			color: Color { r: 0.388, g: 0.60, b: 1.0, a: 1.0 },
 			font_size: 16,
 			font: context.resources.font,
 			..Default::default()

@@ -64,9 +64,6 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 
 		match projectile.shooter {
 			ProjectileShooter::Player => {
-				if state.the_inevitable.hp <= 0 {
-					continue;
-				}
 				if projectile_rect.overlaps(&Rect {
 					x: state.the_inevitable.position.x,
 					y: state.the_inevitable.position.y,
@@ -75,7 +72,7 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 				}) {
 					state.the_inevitable.hp -= 1;
 					to_destroy.push(i);
-					state.screen_shake += vec2(gen_range(-3.0, 3.0), gen_range(-3.0, 3.0));
+					state.screen_shake += vec2(gen_range(-2.5, 2.5), gen_range(-2.5, 2.5));
 					for _ in 0..3 {
 						state.particles.push(Particle::new(projectile.position + vec2(4.0, 4.0), vec2(gen_range(-15.0, 15.0), gen_range(-2.0, 2.0)), -0.1, 5.0, context.resources.particle_tex));
 					}
@@ -83,19 +80,20 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 				}
 			}
 			ProjectileShooter::Enemy => {
-				if state.player.hp <= 0 {
+				if state.player.hp <= 0
+				|| state.the_inevitable.hp <= 0 {
 					continue;
 				}
 				if projectile_rect.overlaps(&Rect {
-					x: state.player.position.x + 2.0,
-					y: state.player.position.y + 2.0,
-					w: 20.0,
-					h: 20.0,
+					x: state.player.position.x + 3.0,
+					y: state.player.position.y + 3.0,
+					w: 18.0,
+					h: 18.0,
 				}) {
 					state.player.hp -= 1;
 					to_destroy.push(i);
 					hit_player = true;
-					state.screen_shake += vec2(gen_range(-8.0, 8.0), gen_range(-8.0, 8.0));
+					state.screen_shake += vec2(gen_range(-7.0, 7.0), gen_range(-7.0, 7.0));
 					for _ in 0..3 {
 						state.particles.push(Particle::new(projectile.position + vec2(4.0, 4.0), vec2(gen_range(-15.0, 15.0), gen_range(-2.0, 2.0)), -0.1, 5.0, context.resources.particle_tex));
 					}

@@ -41,7 +41,7 @@ pub fn the_inevitable_update(state: &mut GameState, context: &mut Context) -> Up
 			for _ in 0..3 {
 				state.particles.push(Particle::new(state.the_inevitable.position + vec2(gen_range(0.0, 214.0), gen_range(0.0, 96.0)), vec2(gen_range(-6.0, 6.0), gen_range(-6.0, 6.0)), -0.6, gen_range(30.0, 60.0), context.resources.smoke_tex));
 			}
-			state.screen_shake += vec2(gen_range(-7.0, 7.0), gen_range(-7.0, 7.0));
+			state.screen_shake += vec2(gen_range(-6.0, 6.0), gen_range(-6.0, 6.0));
 			play_sound(context.resources.the_inevitable_explosion_sfx.unwrap(), PlaySoundParams {
 				volume: 0.8,
 				looped: false,
@@ -58,18 +58,24 @@ pub fn the_inevitable_update(state: &mut GameState, context: &mut Context) -> Up
 	state.the_inevitable.attack_timer -= delta_time();
 	if state.the_inevitable.attack_timer <= 0.0 {
 		state.the_inevitable.attack_timer = ATTACK_TIME;
-		match gen_range(0u8, 2) {
+		match gen_range(0u8, 3) {
 			0 => {
-				let x_offset = gen_range(-140.0, -100.0);
-				for i in 0..10 {
+				let x_offset = gen_range(-130.0, -90.0);
+				for i in 0..8 {
 					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * 45.0, i as f32 * 38.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
 				}
 			}
 			1 => {
+				let x_offset = gen_range(200.0, 240.0);
+				for i in 0..8 {
+					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * -45.0, i as f32 * 38.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
+				}
+			}
+			2 => {
 				let x_offset = gen_range(-140.0, -100.0);
 				for i in 0..3 {
-					for j in 0..10 {
-						state.projectiles.push(Projectile::new(vec2(x_offset - (i % 2) as f32 * 25.0, -100.0) + vec2(j as f32 * 55.0, i as f32 * -160.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
+					for j in 0..8 {
+						state.projectiles.push(Projectile::new(vec2(x_offset - (i % 2) as f32 * 25.0, -60.0) + vec2(j as f32 * 55.0, i as f32 * -160.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
 					}
 				}
 			}

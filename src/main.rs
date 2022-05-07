@@ -1,3 +1,8 @@
+/* TODO
+Health bar for The Inevitable
+Projectile trails?
+*/
+
 mod circles;
 mod context;
 mod game_state;

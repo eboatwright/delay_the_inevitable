@@ -21,13 +21,13 @@ impl Star {
 pub fn stars_init(state: &mut GameState) {
 	state.stars = vec![];
 	for _ in 0..70 {
-		state.stars.push(Star::new(vec3(gen_range(1.0, SCREEN_WIDTH - 8.0), gen_range(1.0, SCREEN_HEIGHT - 8.0), gen_range(0, 2) as f32)));
+		state.stars.push(Star::new(vec3(gen_range(1.0, SCREEN_WIDTH - 8.0), gen_range(1.0, SCREEN_HEIGHT - 8.0), gen_range(0.0, 2.0))));
 	}
 }
 
 pub fn stars_update(state: &mut GameState) {
 	for star in state.stars.iter_mut() {
-		star.position.y += (2.0 - star.position.z) * 2.0 * delta_time();
+		star.position.y += (2.0 - star.position.z) + 1.5 * delta_time();
 		if star.position.y >= SCREEN_HEIGHT {
 			star.position.y = -7.0;
 		}
@@ -36,15 +36,6 @@ pub fn stars_update(state: &mut GameState) {
 
 pub fn stars_render(state: &GameState, context: &Context) {
 	for star in state.stars.iter() {
-		draw_texture_ex(context.resources.star_tex, star.position.x.round(), star.position.y.round(), WHITE, DrawTextureParams {
-			dest_size: Some(vec2(7.0, 7.0)),
-			source: Some(Rect {
-				x: star.position.z * 7.0,
-				y: 0.0,
-				w: 7.0,
-				h: 7.0,
-			}),
-			..Default::default()
-		});
+		draw_texture(context.resources.star_tex, star.position.x.round(), star.position.y.round(), WHITE);
 	}
 }

@@ -13,7 +13,7 @@ use crate::circles::Circle;
 
 const PLAYER_MOVE_SPEED: f32 = 0.96;
 const PLAYER_FRICTION: f32 = 0.76;
-const PLAYER_SHOOT_DELAY: f32 = 8.0;
+const PLAYER_SHOOT_DELAY: f32 = 9.0;
 const PLAYER_ANIMATION_TIME: f32 = 3.0;
 
 pub struct Player {
@@ -83,23 +83,23 @@ pub fn player_update(state: &mut GameState, context: &mut Context) -> UpdateStat
 		}
 	} else {
 		state.player.shoot_timer = 0.0;
-	}
 
-	if is_key_down(KeyCode::Up)
-	|| is_key_down(KeyCode::W) {
-		state.player.velocity.y -= PLAYER_MOVE_SPEED * delta_time();
-	}
-	if is_key_down(KeyCode::Down)
-	|| is_key_down(KeyCode::S) {
-		state.player.velocity.y += PLAYER_MOVE_SPEED * delta_time();
-	}
-	if is_key_down(KeyCode::Left)
-	|| is_key_down(KeyCode::A) {
-		state.player.velocity.x -= PLAYER_MOVE_SPEED * delta_time();
-	}
-	if is_key_down(KeyCode::Right)
-	|| is_key_down(KeyCode::D) {
-		state.player.velocity.x += PLAYER_MOVE_SPEED * delta_time();
+		if is_key_down(KeyCode::Up)
+		|| is_key_down(KeyCode::W) {
+			state.player.velocity.y -= PLAYER_MOVE_SPEED * delta_time();
+		}
+		if is_key_down(KeyCode::Down)
+		|| is_key_down(KeyCode::S) {
+			state.player.velocity.y += PLAYER_MOVE_SPEED * delta_time();
+		}
+		if is_key_down(KeyCode::Left)
+		|| is_key_down(KeyCode::A) {
+			state.player.velocity.x -= PLAYER_MOVE_SPEED * delta_time();
+		}
+		if is_key_down(KeyCode::Right)
+		|| is_key_down(KeyCode::D) {
+			state.player.velocity.x += PLAYER_MOVE_SPEED * delta_time();
+		}
 	}
 
 	state.player.velocity *= PLAYER_FRICTION;

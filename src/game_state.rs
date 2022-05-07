@@ -51,7 +51,7 @@ impl State for GameState {
 	fn update(&mut self, context: &mut Context) -> UpdateStatus {
 		self.is_other_frame = !self.is_other_frame;
 		if self.is_other_frame {
-			self.screen_shake *= -0.7;
+			self.screen_shake *= -0.64;
 			context.viewport.camera.target = (vec2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5) + self.screen_shake).round();
 		}
 
