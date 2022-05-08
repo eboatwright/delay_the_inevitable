@@ -69,7 +69,8 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 					continue;
 				}
 
-				if state.player.hp <= 0
+				if state.player.invincible
+				|| state.player.hp <= 0
 				|| state.the_inevitable.hp <= 0 {
 					continue;
 				}

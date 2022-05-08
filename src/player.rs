@@ -11,10 +11,11 @@ use crate::Context;
 use macroquad::prelude::*;
 use crate::circles::Circle;
 
-const PLAYER_MOVE_SPEED: f32 = 0.96;
-const PLAYER_FRICTION: f32 = 0.76;
-const PLAYER_SHOOT_DELAY: f32 = 9.0;
-const PLAYER_ANIMATION_TIME: f32 = 3.0;
+const MOVE_SPEED: f32 = 0.96;
+const FRICTION: f32 = 0.76;
+const SHOOT_DELAY: f32 = 9.0;
+const ANIMATION_TIME: f32 = 3.0;
+const INVINCIBILITY_TIME: f32 = 6.0;
 
 pub struct Player {
 	pub position: Vec2,
@@ -28,6 +29,9 @@ pub struct Player {
 
 	pub animation_timer: f32,
 	pub animation_src: Vec2,
+
+	pub invincibility_timer: f32,
+	pub invincible: bool,
 }
 
 impl Player {
@@ -44,6 +48,9 @@ impl Player {
 
 			animation_timer: 0.0,
 			animation_src: Vec2::ZERO,
+
+			invincibility_timer: INVINCIBILITY_TIME,
+			invincible: true,
 		}
 	}
 }
@@ -69,11 +76,19 @@ pub fn player_update(state: &mut GameState, context: &mut Context) -> UpdateStat
 		return UpdateStatus::Ok;
 	}
 
+	if state.player.invincible {
+		state.player.invincibility_timer -= delta_time();
+		if state.player.invincibility_timer <= 0.0 {
+			state.player.invincibility_timer = INVINCIBILITY_TIME;
+			state.player.invincible = false;
+		}
+	}
+
 	if is_key_down(KeyCode::Z)
 	|| is_key_down(KeyCode::Space) {
 		state.player.shoot_timer -= delta_time();
 		if state.player.shoot_timer <= 0.0 {
-			state.player.shoot_timer = PLAYER_SHOOT_DELAY;
+			state.player.shoot_timer = SHOOT_DELAY;
 			state.projectiles.push(Projectile::new(state.player.position + vec2(9.0, -3.0), ProjectileShooter::Player));
 			play_sound(context.resources.player_shoot_sfx.unwrap(), PlaySoundParams { volume: 0.2, looped: false });
 			for _ in 0..3 {
@@ -86,23 +101,23 @@ pub fn player_update(state: &mut GameState, context: &mut Context) -> UpdateStat
 
 		if is_key_down(KeyCode::Up)
 		|| is_key_down(KeyCode::W) {
-			state.player.velocity.y -= PLAYER_MOVE_SPEED * delta_time();
+			state.player.velocity.y -= MOVE_SPEED * delta_time();
 		}
 		if is_key_down(KeyCode::Down)
 		|| is_key_down(KeyCode::S) {
-			state.player.velocity.y += PLAYER_MOVE_SPEED * delta_time();
+			state.player.velocity.y += MOVE_SPEED * delta_time();
 		}
 		if is_key_down(KeyCode::Left)
 		|| is_key_down(KeyCode::A) {
-			state.player.velocity.x -= PLAYER_MOVE_SPEED * delta_time();
+			state.player.velocity.x -= MOVE_SPEED * delta_time();
 		}
 		if is_key_down(KeyCode::Right)
 		|| is_key_down(KeyCode::D) {
-			state.player.velocity.x += PLAYER_MOVE_SPEED * delta_time();
+			state.player.velocity.x += MOVE_SPEED * delta_time();
 		}
 	}
 
-	state.player.velocity *= PLAYER_FRICTION;
+	state.player.velocity *= FRICTION;
 	state.player.position += state.player.velocity;
 
 	if state.player.velocity.x.round() < 0.0 {
@@ -115,7 +130,7 @@ pub fn player_update(state: &mut GameState, context: &mut Context) -> UpdateStat
 
 	state.player.animation_timer -= delta_time();
 	if state.player.animation_timer <= 0.0 {
-		state.player.animation_timer = PLAYER_ANIMATION_TIME;
+		state.player.animation_timer = ANIMATION_TIME;
 		state.player.animation_src.x += 1.0;
 		if state.player.animation_src.x > 3.0 {
 			state.player.animation_src.x = 0.0;

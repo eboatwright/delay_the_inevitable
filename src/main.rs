@@ -1,9 +1,3 @@
-/* TODO
-Release update to github.com
-Release update to itch.io
-Release update to ldjam.com
-*/
-
 mod circles;
 mod context;
 mod game_state;

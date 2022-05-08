@@ -12,7 +12,6 @@ use crate::Context;
 use macroquad::prelude::*;
 
 const EXPLOSION_DELAY: f32 = 8.0;
-const ATTACK_TIME: f32 = 120.0;
 const MAX_HEALTH: i16 = 240;
 
 pub struct TheInevitable {
@@ -30,7 +29,7 @@ impl TheInevitable {
 			hp: MAX_HEALTH,
 			explosion_timer: 0.0,
 			win_delay: 120.0,
-			attack_timer: ATTACK_TIME,
+			attack_timer: 80.0,
 		}
 	}
 }
@@ -59,24 +58,32 @@ pub fn the_inevitable_update(state: &mut GameState, context: &mut Context) -> Up
 
 	state.the_inevitable.attack_timer -= delta_time();
 	if state.the_inevitable.attack_timer <= 0.0 {
-		state.the_inevitable.attack_timer = ATTACK_TIME;
+		let hp_percent = state.the_inevitable.hp as f32 / MAX_HEALTH as f32;
+		state.the_inevitable.attack_timer =
+		if hp_percent < 0.33 {
+			60.0
+		} else if hp_percent < 0.66 {
+			85.0
+		} else {
+			110.0
+		};
 		match gen_range(0u8, 3) {
 			0 => {
-				let x_offset = gen_range(-130.0, -90.0);
-				for i in 0..8 {
+				let x_offset = gen_range(-30.0, 10.0);
+				for i in 0..6 {
 					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * 45.0, i as f32 * 38.0), ProjectileShooter::Enemy));
 				}
 			}
 			1 => {
 				let x_offset = gen_range(200.0, 240.0);
-				for i in 0..8 {
+				for i in 0..6 {
 					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * -45.0, i as f32 * 38.0), ProjectileShooter::Enemy));
 				}
 			}
 			2 => {
-				let x_offset = gen_range(-140.0, -100.0);
+				let x_offset = gen_range(-50.0, -10.0);
 				for i in 0..3 {
-					for j in 0..8 {
+					for j in 0..6 {
 						state.projectiles.push(Projectile::new(vec2(x_offset - (i % 2) as f32 * 25.0, -60.0) + vec2(j as f32 * 55.0, i as f32 * -160.0), ProjectileShooter::Enemy));
 					}
 				}
@@ -107,7 +114,7 @@ pub fn the_inevitable_render(state: &GameState, context: &Context) {
 	draw_rectangle(
 		17.0,
 		9.0,
-		(SCREEN_WIDTH - 30.0) * (state.the_inevitable.hp as f32 / MAX_HEALTH as f32),
+		(SCREEN_WIDTH - 34.0) * (state.the_inevitable.hp as f32 / MAX_HEALTH as f32),
 		14.0,
 		Color {
 			r: 0.674,
