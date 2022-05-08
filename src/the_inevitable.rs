@@ -1,3 +1,4 @@
+use crate::SCREEN_WIDTH;
 use crate::projectile::*;
 use crate::win_state::WinState;
 use crate::UpdateStatus;
@@ -12,6 +13,7 @@ use macroquad::prelude::*;
 
 const EXPLOSION_DELAY: f32 = 8.0;
 const ATTACK_TIME: f32 = 120.0;
+const MAX_HEALTH: i16 = 240;
 
 pub struct TheInevitable {
 	pub position: Vec2,
@@ -25,7 +27,7 @@ impl TheInevitable {
 	pub fn new() -> Self {
 		Self {
 			position: vec2(-10.0, -10.0),
-			hp: 200,
+			hp: MAX_HEALTH,
 			explosion_timer: 0.0,
 			win_delay: 120.0,
 			attack_timer: ATTACK_TIME,
@@ -62,20 +64,20 @@ pub fn the_inevitable_update(state: &mut GameState, context: &mut Context) -> Up
 			0 => {
 				let x_offset = gen_range(-130.0, -90.0);
 				for i in 0..8 {
-					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * 45.0, i as f32 * 38.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
+					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * 45.0, i as f32 * 38.0), ProjectileShooter::Enemy));
 				}
 			}
 			1 => {
 				let x_offset = gen_range(200.0, 240.0);
 				for i in 0..8 {
-					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * -45.0, i as f32 * 38.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
+					state.projectiles.push(Projectile::new(vec2(x_offset, -200.0) + vec2(i as f32 * -45.0, i as f32 * 38.0), ProjectileShooter::Enemy));
 				}
 			}
 			2 => {
 				let x_offset = gen_range(-140.0, -100.0);
 				for i in 0..3 {
 					for j in 0..8 {
-						state.projectiles.push(Projectile::new(vec2(x_offset - (i % 2) as f32 * 25.0, -60.0) + vec2(j as f32 * 55.0, i as f32 * -160.0), ProjectileShooter::Enemy, ProjectileMovementType::StraightDown));
+						state.projectiles.push(Projectile::new(vec2(x_offset - (i % 2) as f32 * 25.0, -60.0) + vec2(j as f32 * 55.0, i as f32 * -160.0), ProjectileShooter::Enemy));
 					}
 				}
 			}
@@ -88,4 +90,30 @@ pub fn the_inevitable_update(state: &mut GameState, context: &mut Context) -> Up
 
 pub fn the_inevitable_render(state: &GameState, context: &Context) {
 	draw_texture(context.resources.the_inevitable_tex, state.the_inevitable.position.x + (f32::cos(get_time() as f32) * 10.0).round(), state.the_inevitable.position.y + (f32::sin(get_time() as f32 * 10.0) * 5.0).round(), WHITE);
+
+	draw_rectangle(
+		16.0,
+		8.0,
+		SCREEN_WIDTH - 32.0,
+		16.0,
+		Color {
+			r: 0.133,
+			g: 0.125,
+			b: 0.203,
+			a: 1.0,
+		},
+	);
+
+	draw_rectangle(
+		17.0,
+		9.0,
+		(SCREEN_WIDTH - 30.0) * (state.the_inevitable.hp as f32 / MAX_HEALTH as f32),
+		14.0,
+		Color {
+			r: 0.674,
+			g: 0.196,
+			b: 0.196,
+			a: 1.0,
+		},
+	);
 }

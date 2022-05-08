@@ -74,7 +74,7 @@ pub fn player_update(state: &mut GameState, context: &mut Context) -> UpdateStat
 		state.player.shoot_timer -= delta_time();
 		if state.player.shoot_timer <= 0.0 {
 			state.player.shoot_timer = PLAYER_SHOOT_DELAY;
-			state.projectiles.push(Projectile::new(state.player.position + vec2(9.0, -3.0), ProjectileShooter::Player, ProjectileMovementType::StraightUp));
+			state.projectiles.push(Projectile::new(state.player.position + vec2(9.0, -3.0), ProjectileShooter::Player));
 			play_sound(context.resources.player_shoot_sfx.unwrap(), PlaySoundParams { volume: 0.2, looped: false });
 			for _ in 0..3 {
 				state.particles.push(Particle::new(state.player.position + vec2(10.0, 0.0), vec2(gen_range(-15.0, 15.0), gen_range(-2.0, 2.0)), -0.1, 5.0, context.resources.particle_tex));

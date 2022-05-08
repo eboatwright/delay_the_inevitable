@@ -1,6 +1,7 @@
 /* TODO
-Health bar for The Inevitable
-Projectile trails?
+Release update to github.com
+Release update to itch.io
+Release update to ldjam.com
 */
 
 mod circles;

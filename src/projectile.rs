@@ -13,23 +13,16 @@ pub enum ProjectileShooter {
 	Enemy,
 }
 
-pub enum ProjectileMovementType {
-	StraightDown,
-	StraightUp,
-}
-
 pub struct Projectile {
 	pub position: Vec2,
 	pub shooter: ProjectileShooter,
-	pub movement_type: ProjectileMovementType,
 }
 
 impl Projectile {
-	pub fn new(position: Vec2, shooter: ProjectileShooter, movement_type: ProjectileMovementType) -> Self {
+	pub fn new(position: Vec2, shooter: ProjectileShooter) -> Self {
 		Self {
 			position,
 			shooter,
-			movement_type,
 		}
 	}
 }
@@ -38,23 +31,6 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 	let mut to_destroy = vec![];
 	let mut hit_player = false;
 	for (i, projectile) in state.projectiles.iter_mut().enumerate() {
-		match projectile.movement_type {
-			ProjectileMovementType::StraightDown => {
-				projectile.position.y += 4.2 * delta_time();
-				if projectile.position.y > SCREEN_HEIGHT + 4.0 {
-					to_destroy.push(i);
-					continue;
-				}
-			}
-			ProjectileMovementType::StraightUp => {
-				projectile.position.y -= 9.0 * delta_time();
-				if projectile.position.y < -5.0 {
-					to_destroy.push(i);
-					continue;
-				}
-			}
-		}
-
 		let projectile_rect = Rect {
 			x: projectile.position.x,
 			y: projectile.position.y,
@@ -64,7 +40,14 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 
 		match projectile.shooter {
 			ProjectileShooter::Player => {
-				if projectile_rect.overlaps(&Rect {
+				projectile.position.y -= 9.0 * delta_time();
+				if projectile.position.y < -5.0 {
+					to_destroy.push(i);
+					continue;
+				}
+
+				if state.the_inevitable.hp > 0
+				&& projectile_rect.overlaps(&Rect {
 					x: state.the_inevitable.position.x,
 					y: state.the_inevitable.position.y,
 					w: 260.0,
@@ -80,6 +63,12 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 				}
 			}
 			ProjectileShooter::Enemy => {
+				projectile.position.y += 4.2 * delta_time();
+				if projectile.position.y > SCREEN_HEIGHT + 4.0 {
+					to_destroy.push(i);
+					continue;
+				}
+
 				if state.player.hp <= 0
 				|| state.the_inevitable.hp <= 0 {
 					continue;
