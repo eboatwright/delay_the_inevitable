@@ -98,6 +98,7 @@ pub fn projectiles_update(state: &mut GameState, context: &mut Context) {
 
 	if hit_player {
 		play_sound(context.resources.player_hit_sfx.unwrap(), PlaySoundParams { volume: 0.8, looped: false });
+		state.player.invincible = true;
 	}
 }
 
